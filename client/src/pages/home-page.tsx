@@ -5,7 +5,6 @@ import { Footer } from "@/components/ui/footer";
 import { useQuery } from "@tanstack/react-query";
 import { type Service, type Testimonial } from "@shared/schema";
 import { Monitor, ShoppingCart, Mail, Code, Share2, FileText, ChevronRight, Check, Loader2 } from "lucide-react";
-import voxzealLogoPath from "@assets/voxzeal logo transparent.png";
 
 // Mapping from slug to icon
 const ServiceIcons: Record<string, React.ElementType> = {
@@ -33,13 +32,16 @@ export default function HomePage() {
       <main className="flex-grow">
         {/* Hero section */}
         <div className="bg-primary relative overflow-hidden">
-          {/* Background logo image with low opacity */}
-          <div className="absolute inset-0 z-0 opacity-10 flex items-center justify-center">
-            <img 
-              src={voxzealLogoPath} 
-              alt="VOXZEAL Background" 
-              className="w-3/4 h-auto object-contain max-w-screen-lg" 
-            />
+          {/* Office environment background image with overlay */}
+          <div className="absolute inset-0 z-0">
+            <div 
+              className="w-full h-full bg-cover bg-center opacity-20"
+              style={{
+                backgroundImage: "url('https://images.unsplash.com/photo-1600880292089-90a7e086ee0c?auto=format&fit=crop&q=80&w=1974')",
+                backgroundBlendMode: "overlay"
+              }}
+            ></div>
+            <div className="absolute inset-0 bg-primary opacity-70"></div>
           </div>
           
           <div className="max-w-7xl mx-auto py-20 px-4 sm:py-32 sm:px-6 lg:px-8 relative z-10">
@@ -54,7 +56,7 @@ export default function HomePage() {
               <div className="mt-10 max-w-sm mx-auto sm:max-w-none sm:flex sm:justify-center">
                 <div className="space-y-4 sm:space-y-0 sm:inline-grid sm:grid-cols-2 sm:gap-5">
                   <Link href="/services">
-                    <Button size="lg" className="w-full sm:w-auto">Our Services</Button>
+                    <Button size="lg" className="w-full sm:w-auto border-2 border-white">Our Services</Button>
                   </Link>
                   <a href="https://calendly.com/voxzeal/book-a-call" target="_blank" rel="noopener noreferrer">
                     <Button variant="outline" size="lg" className="w-full sm:w-auto bg-white">
