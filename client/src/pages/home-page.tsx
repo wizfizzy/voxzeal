@@ -5,6 +5,7 @@ import { Footer } from "@/components/ui/footer";
 import { useQuery } from "@tanstack/react-query";
 import { type Service, type Testimonial } from "@shared/schema";
 import { Monitor, ShoppingCart, Mail, Code, Share2, FileText, ChevronRight, Check, Loader2 } from "lucide-react";
+import voxzealLogoPath from "@assets/voxzeal logo transparent.png";
 
 // Mapping from slug to icon
 const ServiceIcons: Record<string, React.ElementType> = {
@@ -31,17 +32,26 @@ export default function HomePage() {
       
       <main className="flex-grow">
         {/* Hero section */}
-        <div className="bg-primary">
-          <div className="max-w-7xl mx-auto py-20 px-4 sm:py-32 sm:px-6 lg:px-8">
-            <div className="text-center md:text-left md:w-2/3">
+        <div className="bg-primary relative overflow-hidden">
+          {/* Background logo image with low opacity */}
+          <div className="absolute inset-0 z-0 opacity-10 flex items-center justify-center">
+            <img 
+              src={voxzealLogoPath} 
+              alt="VOXZEAL Background" 
+              className="w-3/4 h-auto object-contain max-w-screen-lg" 
+            />
+          </div>
+          
+          <div className="max-w-7xl mx-auto py-20 px-4 sm:py-32 sm:px-6 lg:px-8 relative z-10">
+            <div className="text-center mx-auto max-w-3xl">
               <h1 className="text-4xl font-extrabold text-white tracking-tight sm:text-5xl md:text-6xl">
                 Transform Your Digital Presence
               </h1>
-              <p className="mt-6 max-w-md mx-auto md:mx-0 text-lg text-blue-100 sm:max-w-3xl">
+              <p className="mt-6 max-w-2xl mx-auto text-lg text-blue-100">
                 Expert tech virtual assistants, ecommerce support, and digital marketing 
                 services to elevate your business.
               </p>
-              <div className="mt-10 max-w-sm mx-auto md:mx-0 sm:max-w-none sm:flex sm:justify-start">
+              <div className="mt-10 max-w-sm mx-auto sm:max-w-none sm:flex sm:justify-center">
                 <div className="space-y-4 sm:space-y-0 sm:inline-grid sm:grid-cols-2 sm:gap-5">
                   <Link href="/services">
                     <Button size="lg" className="w-full sm:w-auto">Our Services</Button>
