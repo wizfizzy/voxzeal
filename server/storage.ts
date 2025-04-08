@@ -1,7 +1,8 @@
 import { users, type User, type InsertUser } from "@shared/schema";
-import { categories, type Category, type InsertCategory } from "@shared/schema";
-import { locations, type Location, type InsertLocation } from "@shared/schema";
-import { classes, type Class, type InsertClass, type ClassWithDetails } from "@shared/schema";
+import { services, type Service, type InsertService } from "@shared/schema";
+import { portfolioItems, type PortfolioItem, type InsertPortfolioItem, type PortfolioItemWithService } from "@shared/schema";
+import { teamMembers, type TeamMember, type InsertTeamMember } from "@shared/schema";
+import { testimonials, type Testimonial, type InsertTestimonial } from "@shared/schema";
 import { messages, type Message, type InsertMessage } from "@shared/schema";
 import session from "express-session";
 import createMemoryStore from "memorystore";
@@ -14,65 +15,74 @@ export interface IStorage {
   getUserByUsername(username: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
   
-  // Category methods
-  getAllCategories(): Promise<Category[]>;
-  getCategory(id: number): Promise<Category | undefined>;
-  createCategory(category: InsertCategory): Promise<Category>;
-  updateCategory(id: number, category: Partial<InsertCategory>): Promise<Category | undefined>;
-  deleteCategory(id: number): Promise<boolean>;
+  // Service methods
+  getAllServices(): Promise<Service[]>;
+  getService(id: number): Promise<Service | undefined>;
+  getServiceBySlug(slug: string): Promise<Service | undefined>;
+  createService(service: InsertService): Promise<Service>;
+  updateService(id: number, service: Partial<InsertService>): Promise<Service | undefined>;
+  deleteService(id: number): Promise<boolean>;
   
-  // Location methods
-  getAllLocations(): Promise<Location[]>;
-  getLocation(id: number): Promise<Location | undefined>;
-  createLocation(location: InsertLocation): Promise<Location>;
-  updateLocation(id: number, location: Partial<InsertLocation>): Promise<Location | undefined>;
-  deleteLocation(id: number): Promise<boolean>;
+  // Portfolio methods
+  getAllPortfolioItems(): Promise<PortfolioItemWithService[]>;
+  getPortfolioItem(id: number): Promise<PortfolioItemWithService | undefined>;
+  createPortfolioItem(portfolioItem: InsertPortfolioItem): Promise<PortfolioItem>;
+  updatePortfolioItem(id: number, portfolioItem: Partial<InsertPortfolioItem>): Promise<PortfolioItem | undefined>;
+  deletePortfolioItem(id: number): Promise<boolean>;
+  getPortfolioItemsByService(serviceId: number): Promise<PortfolioItemWithService[]>;
   
-  // Class methods
-  getAllClasses(): Promise<ClassWithDetails[]>;
-  getClass(id: number): Promise<ClassWithDetails | undefined>;
-  createClass(classData: InsertClass): Promise<Class>;
-  updateClass(id: number, classData: Partial<InsertClass>): Promise<Class | undefined>;
-  deleteClass(id: number): Promise<boolean>;
-  updateClassAvailability(id: number, availableSpots: number): Promise<Class | undefined>;
-  getClassesByCategory(categoryId: number): Promise<ClassWithDetails[]>;
-  getClassesByLocation(locationId: number): Promise<ClassWithDetails[]>;
-  searchClasses(query: string): Promise<ClassWithDetails[]>;
+  // Team members methods
+  getAllTeamMembers(): Promise<TeamMember[]>;
+  getTeamMember(id: number): Promise<TeamMember | undefined>;
+  createTeamMember(teamMember: InsertTeamMember): Promise<TeamMember>;
+  updateTeamMember(id: number, teamMember: Partial<InsertTeamMember>): Promise<TeamMember | undefined>;
+  deleteTeamMember(id: number): Promise<boolean>;
+  
+  // Testimonial methods
+  getAllTestimonials(): Promise<Testimonial[]>;
+  getTestimonial(id: number): Promise<Testimonial | undefined>;
+  createTestimonial(testimonial: InsertTestimonial): Promise<Testimonial>;
+  updateTestimonial(id: number, testimonial: Partial<InsertTestimonial>): Promise<Testimonial | undefined>;
+  deleteTestimonial(id: number): Promise<boolean>;
   
   // Message methods
   createMessage(message: InsertMessage): Promise<Message>;
   getAllMessages(): Promise<Message[]>;
   
   // Session store
-  sessionStore: session.SessionStore;
+  sessionStore: session.Store;
 }
 
 export class MemStorage implements IStorage {
   private usersData: Map<number, User>;
-  private categoriesData: Map<number, Category>;
-  private locationsData: Map<number, Location>;
-  private classesData: Map<number, Class>;
+  private servicesData: Map<number, Service>;
+  private portfolioItemsData: Map<number, PortfolioItem>;
+  private teamMembersData: Map<number, TeamMember>;
+  private testimonialsData: Map<number, Testimonial>;
   private messagesData: Map<number, Message>;
   
   private userCurrentId: number;
-  private categoryCurrentId: number;
-  private locationCurrentId: number;
-  private classCurrentId: number;
+  private serviceCurrentId: number;
+  private portfolioItemCurrentId: number;
+  private teamMemberCurrentId: number;
+  private testimonialCurrentId: number;
   private messageCurrentId: number;
   
-  sessionStore: session.SessionStore;
+  sessionStore: session.Store;
 
   constructor() {
     this.usersData = new Map();
-    this.categoriesData = new Map();
-    this.locationsData = new Map();
-    this.classesData = new Map();
+    this.servicesData = new Map();
+    this.portfolioItemsData = new Map();
+    this.teamMembersData = new Map();
+    this.testimonialsData = new Map();
     this.messagesData = new Map();
     
     this.userCurrentId = 1;
-    this.categoryCurrentId = 1;
-    this.locationCurrentId = 1;
-    this.classCurrentId = 1;
+    this.serviceCurrentId = 1;
+    this.portfolioItemCurrentId = 1;
+    this.teamMemberCurrentId = 1;
+    this.testimonialCurrentId = 1;
     this.messageCurrentId = 1;
     
     this.sessionStore = new MemoryStore({
@@ -101,124 +111,134 @@ export class MemStorage implements IStorage {
     return user;
   }
   
-  // Category methods
-  async getAllCategories(): Promise<Category[]> {
-    return Array.from(this.categoriesData.values());
+  // Service methods
+  async getAllServices(): Promise<Service[]> {
+    return Array.from(this.servicesData.values());
   }
   
-  async getCategory(id: number): Promise<Category | undefined> {
-    return this.categoriesData.get(id);
+  async getService(id: number): Promise<Service | undefined> {
+    return this.servicesData.get(id);
   }
   
-  async createCategory(insertCategory: InsertCategory): Promise<Category> {
-    const id = this.categoryCurrentId++;
-    const category: Category = { ...insertCategory, id };
-    this.categoriesData.set(id, category);
-    return category;
+  async getServiceBySlug(slug: string): Promise<Service | undefined> {
+    return Array.from(this.servicesData.values()).find(
+      (service) => service.slug === slug
+    );
   }
   
-  async updateCategory(id: number, categoryData: Partial<InsertCategory>): Promise<Category | undefined> {
-    const existingCategory = this.categoriesData.get(id);
-    if (!existingCategory) return undefined;
+  async createService(insertService: InsertService): Promise<Service> {
+    const id = this.serviceCurrentId++;
+    const service: Service = { ...insertService, id };
+    this.servicesData.set(id, service);
+    return service;
+  }
+  
+  async updateService(id: number, serviceData: Partial<InsertService>): Promise<Service | undefined> {
+    const existingService = this.servicesData.get(id);
+    if (!existingService) return undefined;
     
-    const updatedCategory = { ...existingCategory, ...categoryData };
-    this.categoriesData.set(id, updatedCategory);
-    return updatedCategory;
+    const updatedService = { ...existingService, ...serviceData };
+    this.servicesData.set(id, updatedService);
+    return updatedService;
   }
   
-  async deleteCategory(id: number): Promise<boolean> {
-    return this.categoriesData.delete(id);
+  async deleteService(id: number): Promise<boolean> {
+    return this.servicesData.delete(id);
   }
   
-  // Location methods
-  async getAllLocations(): Promise<Location[]> {
-    return Array.from(this.locationsData.values());
+  // Portfolio methods
+  async getAllPortfolioItems(): Promise<PortfolioItemWithService[]> {
+    return Array.from(this.portfolioItemsData.values()).map(item => this.addPortfolioItemDetails(item));
   }
   
-  async getLocation(id: number): Promise<Location | undefined> {
-    return this.locationsData.get(id);
+  async getPortfolioItem(id: number): Promise<PortfolioItemWithService | undefined> {
+    const portfolioItem = this.portfolioItemsData.get(id);
+    if (!portfolioItem) return undefined;
+    return this.addPortfolioItemDetails(portfolioItem);
   }
   
-  async createLocation(insertLocation: InsertLocation): Promise<Location> {
-    const id = this.locationCurrentId++;
-    const location: Location = { ...insertLocation, id };
-    this.locationsData.set(id, location);
-    return location;
+  async createPortfolioItem(insertPortfolioItem: InsertPortfolioItem): Promise<PortfolioItem> {
+    const id = this.portfolioItemCurrentId++;
+    const portfolioItem: PortfolioItem = { ...insertPortfolioItem, id };
+    this.portfolioItemsData.set(id, portfolioItem);
+    return portfolioItem;
   }
   
-  async updateLocation(id: number, locationData: Partial<InsertLocation>): Promise<Location | undefined> {
-    const existingLocation = this.locationsData.get(id);
-    if (!existingLocation) return undefined;
+  async updatePortfolioItem(id: number, portfolioItemData: Partial<InsertPortfolioItem>): Promise<PortfolioItem | undefined> {
+    const existingPortfolioItem = this.portfolioItemsData.get(id);
+    if (!existingPortfolioItem) return undefined;
     
-    const updatedLocation = { ...existingLocation, ...locationData };
-    this.locationsData.set(id, updatedLocation);
-    return updatedLocation;
+    const updatedPortfolioItem = { ...existingPortfolioItem, ...portfolioItemData };
+    this.portfolioItemsData.set(id, updatedPortfolioItem);
+    return updatedPortfolioItem;
   }
   
-  async deleteLocation(id: number): Promise<boolean> {
-    return this.locationsData.delete(id);
+  async deletePortfolioItem(id: number): Promise<boolean> {
+    return this.portfolioItemsData.delete(id);
   }
   
-  // Class methods
-  async getAllClasses(): Promise<ClassWithDetails[]> {
-    return Array.from(this.classesData.values()).map(cls => this.addClassDetails(cls));
+  async getPortfolioItemsByService(serviceId: number): Promise<PortfolioItemWithService[]> {
+    return Array.from(this.portfolioItemsData.values())
+      .filter(item => item.serviceId === serviceId)
+      .map(item => this.addPortfolioItemDetails(item));
   }
   
-  async getClass(id: number): Promise<ClassWithDetails | undefined> {
-    const cls = this.classesData.get(id);
-    if (!cls) return undefined;
-    return this.addClassDetails(cls);
+  // Team members methods
+  async getAllTeamMembers(): Promise<TeamMember[]> {
+    return Array.from(this.teamMembersData.values());
   }
   
-  async createClass(insertClass: InsertClass): Promise<Class> {
-    const id = this.classCurrentId++;
-    const cls: Class = { ...insertClass, id };
-    this.classesData.set(id, cls);
-    return cls;
+  async getTeamMember(id: number): Promise<TeamMember | undefined> {
+    return this.teamMembersData.get(id);
   }
   
-  async updateClass(id: number, classData: Partial<InsertClass>): Promise<Class | undefined> {
-    const existingClass = this.classesData.get(id);
-    if (!existingClass) return undefined;
+  async createTeamMember(insertTeamMember: InsertTeamMember): Promise<TeamMember> {
+    const id = this.teamMemberCurrentId++;
+    const teamMember: TeamMember = { ...insertTeamMember, id };
+    this.teamMembersData.set(id, teamMember);
+    return teamMember;
+  }
+  
+  async updateTeamMember(id: number, teamMemberData: Partial<InsertTeamMember>): Promise<TeamMember | undefined> {
+    const existingTeamMember = this.teamMembersData.get(id);
+    if (!existingTeamMember) return undefined;
     
-    const updatedClass = { ...existingClass, ...classData };
-    this.classesData.set(id, updatedClass);
-    return updatedClass;
+    const updatedTeamMember = { ...existingTeamMember, ...teamMemberData };
+    this.teamMembersData.set(id, updatedTeamMember);
+    return updatedTeamMember;
   }
   
-  async deleteClass(id: number): Promise<boolean> {
-    return this.classesData.delete(id);
+  async deleteTeamMember(id: number): Promise<boolean> {
+    return this.teamMembersData.delete(id);
   }
   
-  async updateClassAvailability(id: number, availableSpots: number): Promise<Class | undefined> {
-    const existingClass = this.classesData.get(id);
-    if (!existingClass) return undefined;
+  // Testimonial methods
+  async getAllTestimonials(): Promise<Testimonial[]> {
+    return Array.from(this.testimonialsData.values());
+  }
+  
+  async getTestimonial(id: number): Promise<Testimonial | undefined> {
+    return this.testimonialsData.get(id);
+  }
+  
+  async createTestimonial(insertTestimonial: InsertTestimonial): Promise<Testimonial> {
+    const id = this.testimonialCurrentId++;
+    const testimonial: Testimonial = { ...insertTestimonial, id };
+    this.testimonialsData.set(id, testimonial);
+    return testimonial;
+  }
+  
+  async updateTestimonial(id: number, testimonialData: Partial<InsertTestimonial>): Promise<Testimonial | undefined> {
+    const existingTestimonial = this.testimonialsData.get(id);
+    if (!existingTestimonial) return undefined;
     
-    const updatedClass = { ...existingClass, availableSpots };
-    this.classesData.set(id, updatedClass);
-    return updatedClass;
+    const updatedTestimonial = { ...existingTestimonial, ...testimonialData };
+    this.testimonialsData.set(id, updatedTestimonial);
+    return updatedTestimonial;
   }
   
-  async getClassesByCategory(categoryId: number): Promise<ClassWithDetails[]> {
-    return Array.from(this.classesData.values())
-      .filter(cls => cls.categoryId === categoryId)
-      .map(cls => this.addClassDetails(cls));
-  }
-  
-  async getClassesByLocation(locationId: number): Promise<ClassWithDetails[]> {
-    return Array.from(this.classesData.values())
-      .filter(cls => cls.locationId === locationId)
-      .map(cls => this.addClassDetails(cls));
-  }
-  
-  async searchClasses(query: string): Promise<ClassWithDetails[]> {
-    const lowercaseQuery = query.toLowerCase();
-    return Array.from(this.classesData.values())
-      .filter(cls => 
-        cls.title.toLowerCase().includes(lowercaseQuery) || 
-        cls.description.toLowerCase().includes(lowercaseQuery)
-      )
-      .map(cls => this.addClassDetails(cls));
+  async deleteTestimonial(id: number): Promise<boolean> {
+    return this.testimonialsData.delete(id);
   }
   
   // Message methods
@@ -238,18 +258,16 @@ export class MemStorage implements IStorage {
   }
   
   // Helper methods
-  private addClassDetails(cls: Class): ClassWithDetails {
-    const category = this.categoriesData.get(cls.categoryId);
-    const location = this.locationsData.get(cls.locationId);
+  private addPortfolioItemDetails(portfolioItem: PortfolioItem): PortfolioItemWithService {
+    const service = this.servicesData.get(portfolioItem.serviceId);
     
-    if (!category || !location) {
-      throw new Error(`Missing category or location for class ${cls.id}`);
+    if (!service) {
+      throw new Error(`Missing service for portfolio item ${portfolioItem.id}`);
     }
     
     return {
-      ...cls,
-      category,
-      location
+      ...portfolioItem,
+      service
     };
   }
   
@@ -264,121 +282,164 @@ export class MemStorage implements IStorage {
     };
     this.usersData.set(adminUser.id, adminUser);
     
-    // Create categories
-    const categories: InsertCategory[] = [
-      { name: "Art & Crafts", color: "#3B82F6", textColor: "#1E40AF", bgColor: "#DBEAFE" },
-      { name: "Cooking", color: "#F59E0B", textColor: "#92400E", bgColor: "#FEF3C7" },
-      { name: "Fitness", color: "#10B981", textColor: "#065F46", bgColor: "#D1FAE5" },
-      { name: "Technology", color: "#8B5CF6", textColor: "#5B21B6", bgColor: "#EDE9FE" },
-      { name: "Languages", color: "#EC4899", textColor: "#9D174D", bgColor: "#FCE7F3" },
-      { name: "Music", color: "#EF4444", textColor: "#991B1B", bgColor: "#FEE2E2" }
-    ];
-    
-    categories.forEach(category => {
-      this.categoriesData.set(this.categoryCurrentId, { ...category, id: this.categoryCurrentId });
-      this.categoryCurrentId++;
-    });
-    
-    // Create locations
-    const locations: InsertLocation[] = [
-      { name: "Downtown Studio", address: "123 Main St, Downtown" },
-      { name: "Culinary Institute", address: "456 Chef Way, North End" },
-      { name: "East Side Wellness Center", address: "789 Healthy Blvd, East Side" },
-      { name: "Tech Hub Coworking", address: "321 Digital Lane, Innovation District" },
-      { name: "City Park & Art Center", address: "654 Nature Path, Green District" },
-      { name: "Waterfront Gallery", address: "987 Ocean View, Harborside" }
-    ];
-    
-    locations.forEach(location => {
-      this.locationsData.set(this.locationCurrentId, { ...location, id: this.locationCurrentId });
-      this.locationCurrentId++;
-    });
-    
-    // Create classes
-    const classes: InsertClass[] = [
-      {
-        title: "Pottery Workshop for Beginners",
-        description: "Learn the basics of pottery in this hands-on workshop perfect for beginners. All materials included.",
-        price: 6500, // Storing prices in cents
-        priceUnit: "per person",
-        totalSpots: 12,
-        availableSpots: 8,
-        imageUrl: "https://images.unsplash.com/photo-1544531585-9847b68c8c86?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
-        date: "Wed, June 15",
-        time: "6:00 PM - 8:00 PM",
-        categoryId: 1, // Art & Crafts
-        locationId: 1 // Downtown Studio
+    // Create services
+    const services: InsertService[] = [
+      { 
+        name: "Tech Virtual Assistant", 
+        slug: "tech-virtual-assistant", 
+        description: "Professional remote assistance for all your technical needs and administrative tasks.",
+        icon: "monitor",
+        detailedDescription: "Our Tech Virtual Assistants provide comprehensive remote support for businesses of all sizes. From managing your digital presence to handling technical tasks, our experienced professionals help you focus on growing your business while we handle the technical details."
       },
-      {
-        title: "Seasonal Farm-to-Table Cooking",
-        description: "Learn to prepare delicious meals using fresh, seasonal ingredients from local farms. Includes dinner!",
-        price: 8500,
-        priceUnit: "per person",
-        totalSpots: 10,
-        availableSpots: 2,
-        imageUrl: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
-        date: "Sat, June 18",
-        time: "2:00 PM - 5:00 PM",
-        categoryId: 2, // Cooking
-        locationId: 2 // Culinary Institute
+      { 
+        name: "Ecommerce Support", 
+        slug: "ecommerce-support", 
+        description: "Complete management and optimization services for your online store.",
+        icon: "shopping-cart",
+        detailedDescription: "VOXZEAL provides end-to-end ecommerce support including store setup, product listing, inventory management, order processing, and customer service. We help businesses establish and grow their online presence with optimized product listings and streamlined operations."
       },
-      {
-        title: "Yoga for Stress Relief",
-        description: "A gentle yoga class focused on stress relief and relaxation. Perfect for all experience levels.",
-        price: 1500,
-        priceUnit: "per session",
-        totalSpots: 20,
-        availableSpots: 12,
-        imageUrl: "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
-        date: "Every Monday",
-        time: "7:00 PM - 8:00 PM",
-        categoryId: 3, // Fitness
-        locationId: 3 // East Side Wellness Center
+      { 
+        name: "Email Marketing", 
+        slug: "email-marketing", 
+        description: "Strategic email campaigns that drive engagement and convert prospects into customers.",
+        icon: "mail",
+        detailedDescription: "Our email marketing services include campaign strategy, content creation, design, automation, and performance analysis. We create personalized email journeys that nurture leads, retain customers, and drive revenue with data-driven approaches and continuous optimization."
       },
-      {
-        title: "Intro to Web Development",
-        description: "Learn the basics of HTML, CSS, and JavaScript in this workshop designed for complete beginners.",
-        price: 12000,
-        priceUnit: "per person",
-        totalSpots: 15,
-        availableSpots: 0,
-        imageUrl: "https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
-        date: "Sat-Sun, June 25-26",
-        time: "10:00 AM - 4:00 PM",
-        categoryId: 4, // Technology
-        locationId: 4 // Tech Hub Coworking
+      { 
+        name: "Web Design & Development", 
+        slug: "web-design-development", 
+        description: "Custom, responsive websites that deliver exceptional user experiences.",
+        icon: "code",
+        detailedDescription: "VOXZEAL creates stunning, functional websites that reflect your brand and meet your business objectives. From simple landing pages to complex e-commerce platforms, our team delivers modern, mobile-responsive websites with intuitive user interfaces and robust backends."
       },
-      {
-        title: "Urban Sketching Basics",
-        description: "Learn to sketch urban scenes with simple techniques. All skill levels welcome. Materials provided.",
-        price: 4500,
-        priceUnit: "per person",
-        totalSpots: 12,
-        availableSpots: 10,
-        imageUrl: "https://images.unsplash.com/photo-1535131749006-b7f58c99034b?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
-        date: "Sun, June 19",
-        time: "9:00 AM - 12:00 PM",
-        categoryId: 1, // Art & Crafts
-        locationId: 5 // City Park & Art Center
+      { 
+        name: "Social Media Management", 
+        slug: "social-media-management", 
+        description: "Comprehensive management of your brand's presence across social platforms.",
+        icon: "share-2",
+        detailedDescription: "Our social media experts develop and execute strategies that build your online presence, engage your audience, and drive business growth. Services include content creation, community management, paid advertising, and performance analytics across all major platforms."
       },
-      {
-        title: "Photography Fundamentals",
-        description: "Master the basics of composition, lighting and camera settings. Bring your own camera.",
-        price: 8000,
-        priceUnit: "per person",
-        totalSpots: 8,
-        availableSpots: 3,
-        imageUrl: "https://images.unsplash.com/photo-1503428593586-e225b39bddfe?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
-        date: "Fri, June 24",
-        time: "1:00 PM - 4:00 PM",
-        categoryId: 1, // Art & Crafts
-        locationId: 6 // Waterfront Gallery
+      { 
+        name: "Content Writing", 
+        slug: "content-writing", 
+        description: "Engaging, SEO-optimized content that resonates with your target audience.",
+        icon: "file-text",
+        detailedDescription: "VOXZEAL's professional writers create compelling content that engages your audience and drives conversions. From blog posts and website copy to whitepapers and case studies, our content is strategically crafted to enhance your brand voice and improve search engine rankings."
       }
     ];
     
-    classes.forEach(cls => {
-      this.classesData.set(this.classCurrentId, { ...cls, id: this.classCurrentId });
-      this.classCurrentId++;
+    services.forEach(service => {
+      this.servicesData.set(this.serviceCurrentId, { ...service, id: this.serviceCurrentId });
+      this.serviceCurrentId++;
+    });
+    
+    // Create team members
+    const teamMembers: InsertTeamMember[] = [
+      {
+        name: "Jessica Thompson",
+        role: "CEO & Founder",
+        bio: "Jessica has 10+ years of experience in digital marketing and business development. She founded VOXZEAL with a vision to help businesses grow through innovative digital solutions.",
+        imageUrl: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80"
+      },
+      {
+        name: "Michael Chen",
+        role: "Technical Director",
+        bio: "Michael oversees all technical aspects of client projects. With a background in software engineering, he ensures all solutions are robust, scalable and future-proof.",
+        imageUrl: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80"
+      },
+      {
+        name: "Sarah Johnson",
+        role: "Creative Director",
+        bio: "Sarah leads our design team with her exceptional eye for aesthetics and user experience. She transforms client visions into visually stunning, functional designs.",
+        imageUrl: "https://images.unsplash.com/photo-1580489944761-15a19d654956?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80"
+      },
+      {
+        name: "David Rodriguez",
+        role: "Marketing Strategist",
+        bio: "David crafts data-driven marketing strategies that deliver measurable results. His analytical approach helps clients maximize their marketing ROI.",
+        imageUrl: "https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80"
+      }
+    ];
+    
+    teamMembers.forEach(member => {
+      this.teamMembersData.set(this.teamMemberCurrentId, { ...member, id: this.teamMemberCurrentId });
+      this.teamMemberCurrentId++;
+    });
+    
+    // Create testimonials
+    const testimonials: InsertTestimonial[] = [
+      {
+        name: "Emily Roberts",
+        company: "Bloom Boutique",
+        testimonial: "VOXZEAL transformed our online presence completely. Their ecommerce support and social media management have increased our sales by 40% in just three months!",
+        imageUrl: "https://images.unsplash.com/photo-1567532939604-b6b5b0db2604?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80"
+      },
+      {
+        name: "James Wilson",
+        company: "Tech Innovations Ltd",
+        testimonial: "The web development team at VOXZEAL delivered a site that exceeded our expectations. Their attention to detail and technical expertise is unmatched.",
+        imageUrl: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80"
+      },
+      {
+        name: "Sophia Martinez",
+        company: "Culinary Creations",
+        testimonial: "Their email marketing campaigns have revolutionized how we connect with customers. We've seen a 25% increase in repeat business since working with VOXZEAL.",
+        imageUrl: "https://images.unsplash.com/photo-1548142813-c348350df52b?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80"
+      }
+    ];
+    
+    testimonials.forEach(testimonial => {
+      this.testimonialsData.set(this.testimonialCurrentId, { ...testimonial, id: this.testimonialCurrentId });
+      this.testimonialCurrentId++;
+    });
+    
+    // Create portfolio items
+    const portfolioItems: InsertPortfolioItem[] = [
+      {
+        title: "E-commerce Transformation",
+        description: "Complete redesign and optimization of an online fashion store, resulting in a 65% increase in conversion rate.",
+        imageUrl: "https://images.unsplash.com/photo-1523381294911-8d3cead13475?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
+        client: "Urban Style Apparel",
+        serviceId: 2, // Ecommerce Support
+        result: "65% increase in conversion rate, 40% reduction in cart abandonment",
+        testimonial: "VOXZEAL completely transformed our online store. The new design is not only beautiful but incredibly functional, leading to significant improvements in our sales metrics.",
+        testimonialAuthor: "Amanda Lewis, Marketing Director"
+      },
+      {
+        title: "Email Automation Campaign",
+        description: "Developed and implemented a multi-touchpoint email nurture sequence for a SaaS company.",
+        imageUrl: "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
+        client: "CloudSoft Solutions",
+        serviceId: 3, // Email Marketing
+        result: "32% increase in trial conversions, 22% improvement in customer retention",
+        testimonial: "The email campaign VOXZEAL created has been a game-changer for our customer journey. From onboarding to retention, every message feels perfectly timed and relevant.",
+        testimonialAuthor: "Mark Johnson, CEO"
+      },
+      {
+        title: "Corporate Website Redesign",
+        description: "Complete overhaul of a financial services company website with focus on user experience and lead generation.",
+        imageUrl: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
+        client: "Meridian Financial Advisors",
+        serviceId: 4, // Web Design & Development
+        result: "85% increase in inquiry form submissions, 40% reduction in bounce rate",
+        testimonial: "Our new website perfectly represents our brand while delivering measurable business results. The VOXZEAL team was responsive, creative, and technically excellent throughout the project.",
+        testimonialAuthor: "Robert Chen, Marketing Manager"
+      },
+      {
+        title: "Social Media Growth Strategy",
+        description: "Comprehensive social media strategy and content creation for a wellness brand entering a competitive market.",
+        imageUrl: "https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
+        client: "Serene Living Co.",
+        serviceId: 5, // Social Media Management
+        result: "210% growth in social following over 6 months, 45% increase in website traffic from social channels",
+        testimonial: "VOXZEAL's social media team understood our brand voice immediately and created content that truly resonated with our audience. The growth we've seen has been phenomenal.",
+        testimonialAuthor: "Olivia Parker, Founder"
+      }
+    ];
+    
+    portfolioItems.forEach(item => {
+      this.portfolioItemsData.set(this.portfolioItemCurrentId, { ...item, id: this.portfolioItemCurrentId });
+      this.portfolioItemCurrentId++;
     });
   }
 }

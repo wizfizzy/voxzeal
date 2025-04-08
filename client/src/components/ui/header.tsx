@@ -1,87 +1,193 @@
+import { useState } from "react";
 import { Link, useLocation } from "wouter";
-import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/use-auth";
-import { Settings } from "lucide-react";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { Menu, X, ChevronDown } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import logo from "@assets/voxzeal logo transparent.png";
 
 export function Header() {
+  const [isOpen, setIsOpen] = useState(false);
   const [location] = useLocation();
+  const isMobile = useIsMobile();
   const { user, logoutMutation } = useAuth();
-  
+
+  const toggleMenu = () => {
+    setIsOpen(!isOpen);
+  };
+
+  const closeMenu = () => {
+    setIsOpen(false);
+  };
+
+  const handleLogout = () => {
+    logoutMutation.mutate();
+    closeMenu();
+  };
+
+  const isActive = (path: string) => {
+    return location === path;
+  };
+
+  const navItems = [
+    { label: "Home", path: "/" },
+    { label: "Services", path: "/services" },
+    { label: "Portfolio", path: "/portfolio" },
+    { label: "About", path: "/about" },
+    { label: "Contact", path: "/contact" },
+  ];
+
   return (
-    <header className="bg-white shadow-sm sticky top-0 z-10">
+    <header className="bg-white shadow">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
+        <div className="flex justify-between h-20">
           <div className="flex items-center">
-            <Link href="/" className="flex-shrink-0 flex items-center">
-              <svg className="h-8 w-8 text-primary" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"></path>
-              </svg>
-              <span className="ml-2 text-xl font-semibold text-gray-900">ClassFinder</span>
-            </Link>
-            <nav className="hidden md:ml-6 md:flex md:space-x-8">
-              <Link href="/" className={`${location === '/' ? 'border-primary text-gray-900' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'} inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium`}>
-                Explore
-              </Link>
-              <Link href="/classes" className={`${location === '/classes' ? 'border-primary text-gray-900' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'} inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium`}>
-                All Classes
-              </Link>
-              <Link href="/contact" className={`${location === '/contact' ? 'border-primary text-gray-900' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'} inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium`}>
-                Contact
-              </Link>
-            </nav>
-          </div>
-          <div className="flex items-center">
-            <div className="hidden md:block">
-              <div className="ml-4 flex items-center md:ml-6">
-                {user ? (
-                  <>
-                    <span className="text-gray-500 px-3 py-2 rounded-md text-sm font-medium">
-                      Hello, {user.username}
-                    </span>
-                    {user.isAdmin && (
-                      <Link href="/admin">
-                        <Button variant="outline" size="sm" className="mr-2">
-                          <Settings className="h-4 w-4 mr-1" />
-                          Admin
-                        </Button>
-                      </Link>
-                    )}
-                    <Button 
-                      onClick={() => logoutMutation.mutate()} 
-                      variant="ghost" 
-                      size="sm"
-                      disabled={logoutMutation.isPending}
-                    >
-                      Logout
-                    </Button>
-                  </>
-                ) : (
-                  <>
-                    <Link href="/auth">
-                      <Button variant="ghost" size="sm">
-                        Login
-                      </Button>
-                    </Link>
-                    <Link href="/auth">
-                      <Button size="sm" className="ml-2">
-                        Sign up
-                      </Button>
-                    </Link>
-                  </>
-                )}
+            <Link href="/">
+              <div className="flex-shrink-0 flex items-center cursor-pointer">
+                <img
+                  className="h-10 w-auto"
+                  src={logo}
+                  alt="VOXZEAL"
+                />
               </div>
+            </Link>
+          </div>
+
+          {/* Desktop navigation */}
+          <div className="hidden md:flex md:items-center md:space-x-6">
+            <nav className="flex space-x-8">
+              {navItems.map((item) => (
+                <Link key={item.path} href={item.path}>
+                  <div
+                    className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium cursor-pointer ${
+                      isActive(item.path)
+                        ? "border-primary text-gray-900"
+                        : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                    }`}
+                  >
+                    {item.label}
+                  </div>
+                </Link>
+              ))}
+            </nav>
+            <div className="flex items-center">
+              {user ? (
+                <>
+                  {user.isAdmin && (
+                    <Link href="/admin">
+                      <div className="text-gray-600 hover:text-gray-900 mr-4 cursor-pointer">
+                        Admin
+                      </div>
+                    </Link>
+                  )}
+                  <Button
+                    variant="ghost"
+                    onClick={handleLogout}
+                    disabled={logoutMutation.isPending}
+                  >
+                    {logoutMutation.isPending ? "Logging out..." : "Logout"}
+                  </Button>
+                </>
+              ) : (
+                <Link href="/auth">
+                  <Button variant="ghost">Login</Button>
+                </Link>
+              )}
+              <a 
+                href="https://calendly.com/voxzeal/book-a-call" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="ml-4"
+              >
+                <Button>Book a Call</Button>
+              </a>
             </div>
-            <div className="-mr-2 flex md:hidden">
-              <button type="button" className="bg-white inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500" aria-expanded="false">
-                <span className="sr-only">Open main menu</span>
-                <svg className="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
-                </svg>
-              </button>
-            </div>
+          </div>
+
+          {/* Mobile menu button */}
+          <div className="flex items-center md:hidden">
+            <button
+              type="button"
+              className="inline-flex items-center justify-center p-2 rounded-md text-gray-500 hover:text-gray-700 hover:bg-gray-100 focus:outline-none"
+              aria-controls="mobile-menu"
+              aria-expanded="false"
+              onClick={toggleMenu}
+            >
+              <span className="sr-only">
+                {isOpen ? "Close menu" : "Open menu"}
+              </span>
+              {isOpen ? (
+                <X className="block h-6 w-6" aria-hidden="true" />
+              ) : (
+                <Menu className="block h-6 w-6" aria-hidden="true" />
+              )}
+            </button>
           </div>
         </div>
       </div>
+
+      {/* Mobile menu, show/hide based on menu state */}
+      {isOpen && (
+        <div className="md:hidden" id="mobile-menu">
+          <div className="pt-2 pb-3 space-y-1">
+            {navItems.map((item) => (
+              <Link key={item.path} href={item.path}>
+                <div
+                  className={`block pl-3 pr-4 py-2 border-l-4 text-base font-medium cursor-pointer ${
+                    isActive(item.path)
+                      ? "border-primary text-primary-dark bg-primary-light"
+                      : "border-transparent text-gray-600 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-800"
+                  }`}
+                  onClick={closeMenu}
+                >
+                  {item.label}
+                </div>
+              </Link>
+            ))}
+
+            {user ? (
+              <>
+                {user.isAdmin && (
+                  <Link href="/admin">
+                    <div
+                      className="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-800 cursor-pointer"
+                      onClick={closeMenu}
+                    >
+                      Admin
+                    </div>
+                  </Link>
+                )}
+                <button
+                  className="block w-full text-left pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-800"
+                  onClick={handleLogout}
+                  disabled={logoutMutation.isPending}
+                >
+                  {logoutMutation.isPending ? "Logging out..." : "Logout"}
+                </button>
+              </>
+            ) : (
+              <Link href="/auth">
+                <div
+                  className="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-800 cursor-pointer"
+                  onClick={closeMenu}
+                >
+                  Login
+                </div>
+              </Link>
+            )}
+            
+            <a 
+              href="https://calendly.com/voxzeal/book-a-call" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="block pl-3 pr-4 py-2 border-l-4 border-primary text-base font-medium text-primary-dark bg-primary-light cursor-pointer"
+              onClick={closeMenu}
+            >
+              Book a Call
+            </a>
+          </div>
+        </div>
+      )}
     </header>
   );
 }

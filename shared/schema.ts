@@ -1,13 +1,13 @@
-import { pgTable, text, serial, integer, boolean, timestamp } from "drizzle-orm/pg-core";
+import { pgTable, serial, text, boolean, timestamp, integer } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
-// User table
+// Users table
 export const users = pgTable("users", {
   id: serial("id").primaryKey(),
-  username: text("username").notNull().unique(),
+  username: text("username").notNull(),
   password: text("password").notNull(),
-  isAdmin: boolean("is_admin").default(false).notNull(),
+  isAdmin: boolean("is_admin").notNull().default(false),
 });
 
 export const insertUserSchema = createInsertSchema(users).pick({
@@ -15,62 +15,62 @@ export const insertUserSchema = createInsertSchema(users).pick({
   password: true,
 });
 
-// Categories table
-export const categories = pgTable("categories", {
+// Services table
+export const services = pgTable("services", {
   id: serial("id").primaryKey(),
   name: text("name").notNull(),
-  color: text("color").notNull().default("#3B82F6"),
-  textColor: text("text_color").notNull().default("#FFFFFF"),
-  bgColor: text("bg_color").notNull().default("#EBF5FF"),
+  slug: text("slug").notNull(),
+  description: text("description").notNull(),
+  icon: text("icon").notNull(),
+  detailedDescription: text("detailed_description").notNull(),
 });
 
-export const insertCategorySchema = createInsertSchema(categories).pick({
+export const insertServiceSchema = createInsertSchema(services).pick({
   name: true,
-  color: true,
-  textColor: true,
-  bgColor: true,
+  slug: true,
+  description: true,
+  icon: true,
+  detailedDescription: true,
 });
 
-// Locations table
-export const locations = pgTable("locations", {
-  id: serial("id").primaryKey(),
-  name: text("name").notNull(),
-  address: text("address"),
-});
-
-export const insertLocationSchema = createInsertSchema(locations).pick({
-  name: true,
-  address: true,
-});
-
-// Classes table
-export const classes = pgTable("classes", {
+// Portfolio table
+export const portfolioItems = pgTable("portfolio_items", {
   id: serial("id").primaryKey(),
   title: text("title").notNull(),
   description: text("description").notNull(),
-  price: integer("price").notNull(),
-  priceUnit: text("price_unit").notNull().default("per person"),
-  totalSpots: integer("total_spots").notNull(),
-  availableSpots: integer("available_spots").notNull(),
   imageUrl: text("image_url").notNull(),
-  date: text("date").notNull(),
-  time: text("time").notNull(),
-  categoryId: integer("category_id").notNull(),
-  locationId: integer("location_id").notNull(),
+  client: text("client").notNull(),
+  serviceId: integer("service_id").notNull(),
+  result: text("result").notNull(),
+  testimonial: text("testimonial").notNull().default(""),
+  testimonialAuthor: text("testimonial_author").notNull().default(""),
 });
 
-export const insertClassSchema = createInsertSchema(classes).pick({
+export const insertPortfolioItemSchema = createInsertSchema(portfolioItems).pick({
   title: true,
   description: true,
-  price: true,
-  priceUnit: true,
-  totalSpots: true,
-  availableSpots: true,
   imageUrl: true,
-  date: true,
-  time: true,
-  categoryId: true,
-  locationId: true,
+  client: true,
+  serviceId: true,
+  result: true,
+  testimonial: true,
+  testimonialAuthor: true,
+});
+
+// Team Members table
+export const teamMembers = pgTable("team_members", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(),
+  role: text("role").notNull(),
+  bio: text("bio").notNull(),
+  imageUrl: text("image_url").notNull(),
+});
+
+export const insertTeamMemberSchema = createInsertSchema(teamMembers).pick({
+  name: true,
+  role: true,
+  bio: true, 
+  imageUrl: true,
 });
 
 // Messages table
@@ -92,24 +92,42 @@ export const insertMessageSchema = createInsertSchema(messages).pick({
   message: true,
 });
 
+// Testimonials table
+export const testimonials = pgTable("testimonials", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(),
+  company: text("company").notNull(),
+  testimonial: text("testimonial").notNull(),
+  imageUrl: text("image_url").notNull().default(""),
+});
+
+export const insertTestimonialSchema = createInsertSchema(testimonials).pick({
+  name: true,
+  company: true,
+  testimonial: true,
+  imageUrl: true,
+});
+
 // Type definitions
 export type User = typeof users.$inferSelect;
 export type InsertUser = z.infer<typeof insertUserSchema>;
 
-export type Category = typeof categories.$inferSelect;
-export type InsertCategory = z.infer<typeof insertCategorySchema>;
+export type Service = typeof services.$inferSelect;
+export type InsertService = z.infer<typeof insertServiceSchema>;
 
-export type Location = typeof locations.$inferSelect;
-export type InsertLocation = z.infer<typeof insertLocationSchema>;
+export type PortfolioItem = typeof portfolioItems.$inferSelect;
+export type InsertPortfolioItem = z.infer<typeof insertPortfolioItemSchema>;
 
-export type Class = typeof classes.$inferSelect;
-export type InsertClass = z.infer<typeof insertClassSchema>;
+export type TeamMember = typeof teamMembers.$inferSelect;
+export type InsertTeamMember = z.infer<typeof insertTeamMemberSchema>;
 
 export type Message = typeof messages.$inferSelect;
 export type InsertMessage = z.infer<typeof insertMessageSchema>;
 
-// Combined class type with related data
-export type ClassWithDetails = Class & {
-  category: Category;
-  location: Location;
+export type Testimonial = typeof testimonials.$inferSelect;
+export type InsertTestimonial = z.infer<typeof insertTestimonialSchema>;
+
+// Combined portfolio item type with service details
+export type PortfolioItemWithService = PortfolioItem & {
+  service: Service;
 };

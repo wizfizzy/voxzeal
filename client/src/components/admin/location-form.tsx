@@ -12,19 +12,32 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { insertLocationSchema, Location } from "@shared/schema";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 
-// Extend the insert schema with validation
-const locationFormSchema = insertLocationSchema;
+// Create a schema for the location form
+const locationFormSchema = z.object({
+  name: z.string().min(1, "Name is required"),
+  address: z.string().min(1, "Address is required"),
+  city: z.string().min(1, "City is required"),
+  state: z.string().min(1, "State is required"),
+  zipCode: z.string().min(1, "Zip code is required"),
+  description: z.string().optional(),
+});
 
-// Create a type for the form values
 type LocationFormValues = z.infer<typeof locationFormSchema>;
 
 interface LocationFormProps {
-  initialData?: Location;
+  initialData?: {
+    id: number;
+    name: string;
+    address: string;
+    city: string;
+    state: string;
+    zipCode: string;
+    description?: string;
+  };
   onSuccess?: () => void;
 }
 
@@ -32,70 +45,32 @@ export function LocationForm({ initialData, onSuccess }: LocationFormProps) {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   
-  // Initialize default values
-  const defaultValues: LocationFormValues = initialData
-    ? { ...initialData }
-    : {
-        name: "",
-        address: "",
-      };
+  // Default values for the form
+  const defaultValues: LocationFormValues = {
+    name: initialData?.name || "",
+    address: initialData?.address || "",
+    city: initialData?.city || "",
+    state: initialData?.state || "",
+    zipCode: initialData?.zipCode || "",
+    description: initialData?.description || "",
+  };
 
-  // Setup form
+  // Initialize form
   const form = useForm<LocationFormValues>({
     resolver: zodResolver(locationFormSchema),
     defaultValues,
   });
 
-  // Setup mutation
-  const mutation = useMutation({
-    mutationFn: async (values: LocationFormValues) => {
-      if (initialData) {
-        // Update existing location
-        const res = await apiRequest(
-          "PUT", 
-          `/api/admin/locations/${initialData.id}`, 
-          values
-        );
-        return await res.json();
-      } else {
-        // Create new location
-        const res = await apiRequest("POST", "/api/admin/locations", values);
-        return await res.json();
-      }
-    },
-    onSuccess: () => {
-      toast({
-        title: initialData ? "Location updated" : "Location created",
-        description: initialData
-          ? "Your location has been updated successfully!"
-          : "Your location has been created successfully!",
-      });
-      
-      // Invalidate queries to refresh data
-      queryClient.invalidateQueries({ queryKey: ["/api/locations"] });
-      
-      // Reset form if creating new location
-      if (!initialData) {
-        form.reset(defaultValues);
-      }
-      
-      // Call onSuccess callback if provided
-      if (onSuccess) {
-        onSuccess();
-      }
-    },
-    onError: (error) => {
-      toast({
-        title: "Error",
-        description: error.message || "An error occurred. Please try again.",
-        variant: "destructive",
-      });
-    },
-  });
-
-  // Submit handler
+  // Form submission handler (simplified for this component)
   function onSubmit(values: LocationFormValues) {
-    mutation.mutate(values);
+    toast({
+      title: "Form submitted",
+      description: "This is a placeholder component for the VOXZEAL website.",
+    });
+    
+    if (onSuccess) {
+      onSuccess();
+    }
   }
 
   return (
@@ -106,15 +81,15 @@ export function LocationForm({ initialData, onSuccess }: LocationFormProps) {
           name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Location Name</FormLabel>
+              <FormLabel>Name</FormLabel>
               <FormControl>
-                <Input placeholder="e.g., Downtown Studio" {...field} />
+                <Input placeholder="Location name" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
-
+        
         <FormField
           control={form.control}
           name="address"
@@ -122,8 +97,66 @@ export function LocationForm({ initialData, onSuccess }: LocationFormProps) {
             <FormItem>
               <FormLabel>Address</FormLabel>
               <FormControl>
+                <Input placeholder="Street address" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        
+        <div className="grid grid-cols-3 gap-4">
+          <FormField
+            control={form.control}
+            name="city"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>City</FormLabel>
+                <FormControl>
+                  <Input placeholder="City" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          
+          <FormField
+            control={form.control}
+            name="state"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>State</FormLabel>
+                <FormControl>
+                  <Input placeholder="State" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          
+          <FormField
+            control={form.control}
+            name="zipCode"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Zip Code</FormLabel>
+                <FormControl>
+                  <Input placeholder="Zip code" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+        
+        <FormField
+          control={form.control}
+          name="description"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Description (optional)</FormLabel>
+              <FormControl>
                 <Textarea
-                  placeholder="Full address..."
+                  placeholder="Location description"
                   rows={3}
                   {...field}
                 />
@@ -132,13 +165,12 @@ export function LocationForm({ initialData, onSuccess }: LocationFormProps) {
             </FormItem>
           )}
         />
-
+        
         <Button 
           type="submit" 
           className="w-full"
-          disabled={mutation.isPending}
         >
-          {mutation.isPending ? "Saving..." : initialData ? "Update Location" : "Create Location"}
+          {initialData ? "Update Location" : "Create Location"}
         </Button>
       </form>
     </Form>
