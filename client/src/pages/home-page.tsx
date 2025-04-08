@@ -70,7 +70,7 @@ export default function HomePage() {
           </div>
 
           {servicesLoading ? (
-            <div className="mt-12 grid gap-8 md:grid-cols-3">
+            <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {[...Array(6)].map((_, i) => (
                 <div key={i} className="relative p-6 bg-white rounded-lg shadow-md animate-pulse">
                   <div className="h-10 w-10 bg-gray-200 rounded-full mb-4"></div>
@@ -81,17 +81,17 @@ export default function HomePage() {
               ))}
             </div>
           ) : (
-            <div className="mt-12 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+            <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {services.map((service) => {
                 const ServiceIcon = ServiceIcons[service.icon] || Monitor;
                 return (
-                  <div key={service.id} className="relative p-6 bg-white hover:bg-gray-50 rounded-lg shadow-md transition-all duration-300 hover:shadow-lg">
+                  <div key={service.id} className="relative p-6 bg-white hover:bg-gray-50 rounded-lg shadow-md transition-all duration-300 hover:shadow-lg flex flex-col h-full">
                     <div className="text-primary w-12 h-12 mb-4">
                       <ServiceIcon className="w-10 h-10" />
                     </div>
                     <h3 className="text-xl font-bold text-gray-900 mb-2">{service.name}</h3>
-                    <p className="text-gray-500 mb-6">{service.description}</p>
-                    <Link href={`/services/${service.slug}`} className="inline-flex items-center text-primary font-medium hover:text-primary-dark">
+                    <p className="text-gray-500 mb-6 flex-grow">{service.description}</p>
+                    <Link href={`/services/${service.slug}`} className="inline-flex items-center text-primary font-medium hover:text-primary-dark mt-auto">
                       Learn more <ChevronRight className="w-4 h-4 ml-1" />
                     </Link>
                   </div>
@@ -121,37 +121,37 @@ export default function HomePage() {
                 Trusted by businesses of all sizes to deliver exceptional digital solutions
               </p>
             </div>
-            <div className="mt-12 grid gap-8 md:grid-cols-3">
-              <div className="bg-white p-6 rounded-lg shadow-md">
+            <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="bg-white p-6 rounded-lg shadow-md flex flex-col h-full transition-all duration-300 hover:shadow-lg">
                 <div className="flex items-center justify-center h-12 w-12 rounded-md bg-primary text-white mb-4">
                   <Check className="h-6 w-6" />
                 </div>
                 <h3 className="text-xl font-medium text-gray-900">
                   Proven Expertise
                 </h3>
-                <p className="mt-2 text-base text-gray-500">
+                <p className="mt-2 text-base text-gray-500 flex-grow">
                   Our team consists of experienced professionals with specialized skills across various digital domains.
                 </p>
               </div>
-              <div className="bg-white p-6 rounded-lg shadow-md">
+              <div className="bg-white p-6 rounded-lg shadow-md flex flex-col h-full transition-all duration-300 hover:shadow-lg">
                 <div className="flex items-center justify-center h-12 w-12 rounded-md bg-primary text-white mb-4">
                   <Check className="h-6 w-6" />
                 </div>
                 <h3 className="text-xl font-medium text-gray-900">
                   Tailored Solutions
                 </h3>
-                <p className="mt-2 text-base text-gray-500">
+                <p className="mt-2 text-base text-gray-500 flex-grow">
                   We customize our services to match your specific business needs and objectives.
                 </p>
               </div>
-              <div className="bg-white p-6 rounded-lg shadow-md">
+              <div className="bg-white p-6 rounded-lg shadow-md flex flex-col h-full transition-all duration-300 hover:shadow-lg">
                 <div className="flex items-center justify-center h-12 w-12 rounded-md bg-primary text-white mb-4">
                   <Check className="h-6 w-6" />
                 </div>
                 <h3 className="text-xl font-medium text-gray-900">
                   Measurable Results
                 </h3>
-                <p className="mt-2 text-base text-gray-500">
+                <p className="mt-2 text-base text-gray-500 flex-grow">
                   We focus on delivering tangible outcomes that drive growth for your business.
                 </p>
               </div>
@@ -169,9 +169,9 @@ export default function HomePage() {
           </div>
 
           {testimonialsLoading ? (
-            <div className="mt-12 grid gap-8 md:grid-cols-3">
+            <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {[...Array(3)].map((_, i) => (
-                <div key={i} className="bg-white rounded-lg shadow-md p-6 animate-pulse">
+                <div key={i} className="bg-white rounded-lg shadow-md p-6 animate-pulse flex flex-col h-full">
                   <div className="flex items-center mb-4">
                     <div className="h-12 w-12 bg-gray-200 rounded-full"></div>
                     <div className="ml-4">
@@ -179,14 +179,14 @@ export default function HomePage() {
                       <div className="h-3 bg-gray-200 rounded w-32"></div>
                     </div>
                   </div>
-                  <div className="h-24 bg-gray-200 rounded w-full"></div>
+                  <div className="h-24 bg-gray-200 rounded w-full flex-grow"></div>
                 </div>
               ))}
             </div>
           ) : (
-            <div className="mt-12 grid gap-8 md:grid-cols-3">
+            <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {testimonials.slice(0, 3).map((testimonial) => (
-                <div key={testimonial.id} className="bg-white rounded-lg shadow-md p-6">
+                <div key={testimonial.id} className="bg-white rounded-lg shadow-md p-6 flex flex-col h-full transition-all duration-300 hover:shadow-lg">
                   <div className="mb-4">
                     <div className="flex items-center">
                       <svg className="h-5 w-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
@@ -206,7 +206,7 @@ export default function HomePage() {
                       </svg>
                     </div>
                   </div>
-                  <p className="mt-2 text-gray-600 italic">"{testimonial.testimonial}"</p>
+                  <p className="mt-2 text-gray-600 italic flex-grow">"{testimonial.testimonial}"</p>
                   <div className="mt-6 flex items-center">
                     {testimonial.imageUrl && (
                       <img className="h-10 w-10 rounded-full" src={testimonial.imageUrl} alt={testimonial.name} />
