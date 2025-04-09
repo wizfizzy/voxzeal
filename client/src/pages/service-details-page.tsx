@@ -3,37 +3,9 @@ import { Link, useParams } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Header } from "@/components/ui/header";
 import { Footer } from "@/components/ui/footer";
+import { ServiceIcon } from "@/components/ui/service-icon";
 import { type Service, type PortfolioItemWithService } from "@shared/schema";
-import { 
-  Headphones, 
-  ShoppingCart, 
-  MailPlus, 
-  Code, 
-  Share2, 
-  Bot, 
-  ArrowLeft, 
-  Loader2 
-} from "lucide-react";
-
-// Service Icon component to render the appropriate icon
-const ServiceIcon = ({ slug }: { slug: string }) => {
-  switch (slug) {
-    case "tech-virtual-assistant":
-      return <Headphones className="w-20 h-20 text-white" />;
-    case "ecommerce-support":
-      return <ShoppingCart className="w-20 h-20 text-white" />;
-    case "email-marketing":
-      return <MailPlus className="w-20 h-20 text-white" />;
-    case "web-design-development":
-      return <Code className="w-20 h-20 text-white" />;
-    case "social-media-management":
-      return <Share2 className="w-20 h-20 text-white" />;
-    case "ai-automation-development":
-      return <Bot className="w-20 h-20 text-white" />;
-    default:
-      return <Headphones className="w-20 h-20 text-white" />;
-  }
-};
+import { ArrowLeft, Loader2 } from "lucide-react";
 
 export default function ServiceDetailsPage() {
   const [, params] = useParams<{ slug: string }>();
@@ -92,7 +64,7 @@ export default function ServiceDetailsPage() {
                 </div>
                 <div className="mt-8 md:mt-0 md:w-1/3 flex justify-center">
                   <div className="bg-blue-800 p-6 rounded-full">
-                    <ServiceIcon slug={service.slug} />
+                    <ServiceIcon slug={service.slug} size="large" color="white" />
                   </div>
                 </div>
               </div>

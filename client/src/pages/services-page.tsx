@@ -3,37 +3,9 @@ import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Header } from "@/components/ui/header";
 import { Footer } from "@/components/ui/footer";
+import { ServiceIcon } from "@/components/ui/service-icon";
 import { type Service } from "@shared/schema";
-import { 
-  Headphones, 
-  ShoppingCart, 
-  MailPlus, 
-  Code, 
-  Share2, 
-  Bot, 
-  ChevronRight, 
-  Loader2
-} from "lucide-react";
-
-// Service Icon component to render the appropriate icon
-const ServiceIcon = ({ slug }: { slug: string }) => {
-  switch (slug) {
-    case "tech-virtual-assistant":
-      return <Headphones className="w-8 h-8 text-primary" />;
-    case "ecommerce-support":
-      return <ShoppingCart className="w-8 h-8 text-primary" />;
-    case "email-marketing":
-      return <MailPlus className="w-8 h-8 text-primary" />;
-    case "web-design-development":
-      return <Code className="w-8 h-8 text-primary" />;
-    case "social-media-management":
-      return <Share2 className="w-8 h-8 text-primary" />;
-    case "ai-automation-development":
-      return <Bot className="w-8 h-8 text-primary" />;
-    default:
-      return <Headphones className="w-8 h-8 text-primary" />;
-  }
-};
+import { ChevronRight, Loader2 } from "lucide-react";
 
 export default function ServicesPage() {
   const { data: services = [], isLoading } = useQuery<Service[]>({
