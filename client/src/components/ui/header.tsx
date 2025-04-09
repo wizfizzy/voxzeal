@@ -33,11 +33,11 @@ export function Header() {
   return (
     <header className="bg-white shadow">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col items-center h-auto py-4 md:py-0 md:h-24">
-          {/* Logo centered */}
-          <div className="flex items-center justify-center mb-4 md:mb-0">
+        <div className="flex justify-between items-center h-20">
+          {/* Logo on left */}
+          <div className="flex-shrink-0">
             <Link href="/">
-              <div className="flex-shrink-0 flex items-center cursor-pointer">
+              <div className="flex items-center cursor-pointer">
                 <img
                   className="h-16 w-auto"
                   src={logo}
@@ -48,7 +48,7 @@ export function Header() {
           </div>
 
           {/* Desktop navigation - centered */}
-          <div className="hidden md:flex md:items-center md:justify-center w-full">
+          <div className="hidden md:flex md:items-center md:justify-center flex-1">
             <nav className="flex space-x-12">
               {navItems.map((item) => (
                 <Link key={item.path} href={item.path}>
@@ -66,8 +66,8 @@ export function Header() {
             </nav>
           </div>
 
-          {/* Book a call button - bottom on desktop */}
-          <div className="hidden md:flex md:items-center md:justify-center mt-2">
+          {/* Book a call button - right */}
+          <div className="hidden md:flex items-center">
             <a 
               href="https://calendly.com/voxzeal/book-a-call" 
               target="_blank" 
@@ -78,7 +78,7 @@ export function Header() {
           </div>
 
           {/* Mobile menu button */}
-          <div className="md:hidden absolute top-4 right-4">
+          <div className="flex items-center md:hidden">
             <button
               type="button"
               className="inline-flex items-center justify-center p-2 rounded-md text-gray-500 hover:text-gray-700 hover:bg-gray-100 focus:outline-none"
