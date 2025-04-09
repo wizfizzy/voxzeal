@@ -320,11 +320,11 @@ export class MemStorage implements IStorage {
         detailedDescription: "Our social media experts develop and execute strategies that build your online presence, engage your audience, and drive business growth. Services include content creation, community management, paid advertising, and performance analytics across all major platforms."
       },
       { 
-        name: "Content Writing", 
-        slug: "content-writing", 
-        description: "Engaging, SEO-optimized content that resonates with your target audience.",
+        name: "AI Automation and Development", 
+        slug: "ai-automation-development", 
+        description: "Cutting-edge AI solutions to automate processes and enhance business efficiency.",
         icon: "file-text",
-        detailedDescription: "VOXZEAL's professional writers create compelling content that engages your audience and drives conversions. From blog posts and website copy to whitepapers and case studies, our content is strategically crafted to enhance your brand voice and improve search engine rankings."
+        detailedDescription: "VOXZEAL harnesses the power of artificial intelligence to help businesses streamline operations and drive innovation. From advanced chatbots and process automation to custom AI development and prompt engineering, our solutions are designed to enhance efficiency, reduce costs, and create competitive advantages in today's rapidly evolving digital landscape."
       }
     ];
     

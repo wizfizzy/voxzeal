@@ -2,15 +2,12 @@ import { useQuery } from "@tanstack/react-query";
 import { Link } from "wouter";
 import { Header } from "@/components/ui/header";
 import { Footer } from "@/components/ui/footer";
-import { type TeamMember, type Testimonial } from "@shared/schema";
+import { type Testimonial } from "@shared/schema";
 import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import founderImage from "@assets/1696344240154-removebg-preview.png";
 
 export default function AboutPage() {
-  const { data: teamMembers = [], isLoading: teamLoading } = useQuery<TeamMember[]>({
-    queryKey: ['/api/team'],
-  });
-
   const { data: testimonials = [], isLoading: testimonialsLoading } = useQuery<Testimonial[]>({
     queryKey: ['/api/testimonials'],
   });
@@ -27,7 +24,7 @@ export default function AboutPage() {
               About VOXZEAL
             </h1>
             <p className="mt-4 text-lg text-blue-100 max-w-3xl mx-auto">
-              We're a team of digital experts dedicated to helping businesses thrive online through innovative solutions and exceptional service.
+              Dedicated to helping businesses thrive online through innovative solutions and exceptional service.
             </p>
           </div>
         </div>
@@ -46,7 +43,7 @@ export default function AboutPage() {
                 At VOXZEAL, we believe every business deserves a powerful digital presence. Our mission is to provide comprehensive digital solutions that help businesses of all sizes grow, engage with their audience, and achieve measurable results.
               </p>
               <p className="text-lg text-gray-600 mb-6">
-                Founded with a passion for digital innovation, we've assembled a team of experts who bring diverse skills and perspectives to every project. From technical virtual assistants to web development, social media management to content creation, we offer end-to-end services tailored to your unique business needs.
+                Founded with a passion for digital innovation, we bring expertise across tech virtual assistance, web development, social media management, and AI automation. We offer end-to-end services tailored to your unique business needs.
               </p>
               <p className="text-lg text-gray-600">
                 What sets us apart is our commitment to building lasting relationships with our clients. We don't just deliver services; we become partners in your success, providing ongoing support, strategic guidance, and measurable results that drive your business forward.
@@ -112,41 +109,45 @@ export default function AboutPage() {
           </div>
         </div>
 
-        {/* Team Section */}
+        {/* About Me Section */}
         <div className="bg-gray-50 py-16">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center">
-              <h2 className="text-base font-semibold text-primary uppercase tracking-wide">Our Team</h2>
+              <h2 className="text-base font-semibold text-primary uppercase tracking-wide">About Me</h2>
               <p className="mt-1 text-3xl font-extrabold text-gray-900 sm:text-4xl sm:tracking-tight">
-                Meet the Experts Behind VOXZEAL
-              </p>
-              <p className="mt-4 max-w-2xl text-lg text-gray-500 mx-auto">
-                Our diverse team brings together expertise across digital marketing, technology, design, and content creation.
+                Meet The Founder
               </p>
             </div>
 
-            {teamLoading ? (
-              <div className="flex justify-center items-center py-20">
-                <Loader2 className="h-8 w-8 animate-spin text-primary" />
+            <div className="mt-12 flex flex-col md:flex-row items-center gap-8">
+              <div className="md:w-1/3 flex justify-center">
+                <div className="bg-white rounded-full overflow-hidden shadow-lg p-2 border-2 border-primary">
+                  <img 
+                    src={founderImage}
+                    alt="VOXZEAL Founder" 
+                    className="w-72 h-72 rounded-full object-cover"
+                  />
+                </div>
               </div>
-            ) : (
-              <div className="mt-12 grid gap-8 md:grid-cols-2 lg:grid-cols-4">
-                {teamMembers.map((member) => (
-                  <div key={member.id} className="bg-white rounded-lg shadow-md overflow-hidden">
-                    <img 
-                      src={member.imageUrl} 
-                      alt={member.name} 
-                      className="w-full h-64 object-cover"
-                    />
-                    <div className="p-6">
-                      <h3 className="text-lg font-bold text-gray-900">{member.name}</h3>
-                      <p className="text-primary font-medium">{member.role}</p>
-                      <p className="mt-3 text-gray-600">{member.bio}</p>
-                    </div>
-                  </div>
-                ))}
+              <div className="md:w-2/3 mt-8 md:mt-0">
+                <h3 className="text-2xl font-bold text-gray-900 mb-4">Process Automation Specialist</h3>
+                <p className="text-lg text-gray-700 mb-6">
+                  As an experienced Process Automation Specialist specializing in tech support, automation, web design, and Prompt Engineering, I help businesses streamline operations, optimize workflows, and enhance productivity. With a keen eye for efficiency and a proactive approach, I handle client communication, administrative support, email automation, and website management, allowing you to focus on scaling your business.
+                </p>
+                <p className="text-lg text-gray-700">
+                  My goal is to simplify your processes, save you time, and ensure seamless execution of your strategic tasks.
+                </p>
+                <div className="mt-8">
+                  <a 
+                    href="https://calendly.com/voxzeal/book-a-call" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                  >
+                    <Button className="mr-4">Book a Consultation</Button>
+                  </a>
+                </div>
               </div>
-            )}
+            </div>
           </div>
         </div>
 

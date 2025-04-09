@@ -4,16 +4,26 @@ import { Button } from "@/components/ui/button";
 import { Header } from "@/components/ui/header";
 import { Footer } from "@/components/ui/footer";
 import { type Service } from "@shared/schema";
-import { Monitor, ShoppingCart, Mail, Code, Share2, FileText, ChevronRight, Loader2 } from "lucide-react";
+import { 
+  Workflow, 
+  ShoppingCart, 
+  MailPlus, 
+  Code, 
+  Share2, 
+  Bot, 
+  ChevronRight, 
+  Loader2, 
+  HeadphonesIcon 
+} from "lucide-react";
 
 // Mapping from slug to icon
 const ServiceIcons: Record<string, React.ElementType> = {
-  "monitor": Monitor,
-  "shopping-cart": ShoppingCart,
-  "mail": Mail,
-  "code": Code,
-  "share-2": Share2,
-  "file-text": FileText
+  "tech-virtual-assistant": HeadphonesIcon,
+  "ecommerce-support": ShoppingCart,
+  "email-marketing": MailPlus,
+  "web-design-development": Code,
+  "social-media-management": Share2,
+  "ai-automation-development": Bot
 };
 
 export default function ServicesPage() {
@@ -47,7 +57,7 @@ export default function ServicesPage() {
           ) : (
             <div className="grid gap-12">
               {services.map((service, index) => {
-                const ServiceIcon = ServiceIcons[service.icon] || Monitor;
+                const ServiceIcon = ServiceIcons[service.slug] || HeadphonesIcon;
                 const isEven = index % 2 === 0;
                 
                 return (
