@@ -45,7 +45,7 @@ export function Header() {
             <Link href="/">
               <div className="flex-shrink-0 flex items-center cursor-pointer">
                 <img
-                  className="h-14 w-auto"
+                  className="h-16 w-auto"
                   src={logo}
                   alt="VOXZEAL"
                 />
