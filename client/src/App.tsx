@@ -2,7 +2,7 @@ import { Switch, Route } from "wouter";
 import { Toaster } from "@/components/ui/toaster";
 import NotFound from "@/pages/not-found";
 import HomePage from "@/pages/home-page";
-import ContactPage from "@/pages/contact-page";
+import BlogPage from "@/pages/blog-page";
 import AdminPage from "@/pages/admin-page";
 import AuthPage from "@/pages/auth-page";
 import { ProtectedRoute } from "./lib/protected-route";
@@ -23,7 +23,7 @@ function Router() {
       <Route path="/about" component={AboutPage} />
       <Route path="/portfolio" component={PortfolioPage} />
       <Route path="/portfolio/:id" component={PortfolioItemPage} />
-      <Route path="/contact" component={ContactPage} />
+      <Route path="/blog" component={BlogPage} />
       <Route path="/auth" component={AuthPage} />
       <ProtectedRoute path="/admin" component={AdminPage} adminOnly={true} />
       {/* Fallback to 404 */}

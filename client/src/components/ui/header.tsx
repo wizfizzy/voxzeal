@@ -27,7 +27,7 @@ export function Header() {
     { label: "Services", path: "/services" },
     { label: "Portfolio", path: "/portfolio" },
     { label: "About", path: "/about" },
-    { label: "Contact", path: "/contact" },
+    { label: "Blog", path: "/blog" },
   ];
 
   return (

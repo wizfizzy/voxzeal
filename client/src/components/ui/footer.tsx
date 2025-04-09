@@ -66,8 +66,8 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/contact">
-                  <div className="text-gray-300 hover:text-white cursor-pointer">Contact</div>
+                <Link href="/blog">
+                  <div className="text-gray-300 hover:text-white cursor-pointer">Blog</div>
                 </Link>
               </li>
             </ul>
@@ -101,9 +101,9 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/services/web-development">
+                <Link href="/services/web-design-development">
                   <div className="text-gray-300 hover:text-white cursor-pointer">
-                    Web Development
+                    Web Design & Development
                   </div>
                 </Link>
               </li>
@@ -111,6 +111,13 @@ export function Footer() {
                 <Link href="/services/social-media-management">
                   <div className="text-gray-300 hover:text-white cursor-pointer">
                     Social Media Management
+                  </div>
+                </Link>
+              </li>
+              <li>
+                <Link href="/services/ai-automation-development">
+                  <div className="text-gray-300 hover:text-white cursor-pointer">
+                    AI Automation & Development
                   </div>
                 </Link>
               </li>

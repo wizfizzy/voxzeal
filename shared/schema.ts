@@ -108,6 +108,31 @@ export const insertTestimonialSchema = createInsertSchema(testimonials).pick({
   imageUrl: true,
 });
 
+// Blog Posts table
+export const blogPosts = pgTable("blog_posts", {
+  id: serial("id").primaryKey(),
+  title: text("title").notNull(),
+  slug: text("slug").notNull().unique(),
+  content: text("content").notNull(),
+  excerpt: text("excerpt").notNull(),
+  imageUrl: text("image_url").notNull(),
+  publishedAt: timestamp("published_at").notNull().defaultNow(),
+  author: text("author").notNull(),
+  category: text("category").notNull(),
+  tags: text("tags").array(),
+});
+
+export const insertBlogPostSchema = createInsertSchema(blogPosts).pick({
+  title: true,
+  slug: true,
+  content: true,
+  excerpt: true,
+  imageUrl: true,
+  author: true,
+  category: true,
+  tags: true,
+});
+
 // Type definitions
 export type User = typeof users.$inferSelect;
 export type InsertUser = z.infer<typeof insertUserSchema>;
@@ -126,6 +151,9 @@ export type InsertMessage = z.infer<typeof insertMessageSchema>;
 
 export type Testimonial = typeof testimonials.$inferSelect;
 export type InsertTestimonial = z.infer<typeof insertTestimonialSchema>;
+
+export type BlogPost = typeof blogPosts.$inferSelect;
+export type InsertBlogPost = z.infer<typeof insertBlogPostSchema>;
 
 // Combined portfolio item type with service details
 export type PortfolioItemWithService = PortfolioItem & {
