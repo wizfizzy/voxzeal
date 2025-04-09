@@ -66,8 +66,8 @@ export default function ServicesPage() {
                     className={`flex flex-col ${isEven ? 'md:flex-row' : 'md:flex-row-reverse'} gap-8 items-center`}
                   >
                     <div className="md:w-1/2">
-                      <div className="bg-primary bg-opacity-10 p-8 rounded-lg inline-block mb-4">
-                        <ServiceIcon className="w-16 h-16 text-primary" />
+                      <div className="mb-4">
+                        <ServiceIcon className="w-16 h-16 p-3 text-primary bg-primary bg-opacity-10 rounded-full" />
                       </div>
                       <h2 className="text-2xl font-bold text-gray-900 mb-4">{service.name}</h2>
                       <p className="text-lg text-gray-600 mb-6">{service.description}</p>
