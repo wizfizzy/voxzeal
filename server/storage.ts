@@ -288,42 +288,42 @@ export class MemStorage implements IStorage {
         name: "Tech Virtual Assistant", 
         slug: "tech-virtual-assistant", 
         description: "Professional remote assistance for all your technical needs and administrative tasks.",
-        icon: "monitor",
+        icon: "tech-virtual-assistant",
         detailedDescription: "Our Tech Virtual Assistants provide comprehensive remote support for businesses of all sizes. From managing your digital presence to handling technical tasks, our experienced professionals help you focus on growing your business while we handle the technical details."
       },
       { 
         name: "Ecommerce Support", 
         slug: "ecommerce-support", 
         description: "Complete management and optimization services for your online store.",
-        icon: "shopping-cart",
+        icon: "ecommerce-support",
         detailedDescription: "VOXZEAL provides end-to-end ecommerce support including store setup, product listing, inventory management, order processing, and customer service. We help businesses establish and grow their online presence with optimized product listings and streamlined operations."
       },
       { 
         name: "Email Marketing", 
         slug: "email-marketing", 
         description: "Strategic email campaigns that drive engagement and convert prospects into customers.",
-        icon: "mail",
+        icon: "email-marketing",
         detailedDescription: "Our email marketing services include campaign strategy, content creation, design, automation, and performance analysis. We create personalized email journeys that nurture leads, retain customers, and drive revenue with data-driven approaches and continuous optimization."
       },
       { 
         name: "Web Design & Development", 
         slug: "web-design-development", 
         description: "Custom, responsive websites that deliver exceptional user experiences.",
-        icon: "code",
+        icon: "web-design-development",
         detailedDescription: "VOXZEAL creates stunning, functional websites that reflect your brand and meet your business objectives. From simple landing pages to complex e-commerce platforms, our team delivers modern, mobile-responsive websites with intuitive user interfaces and robust backends."
       },
       { 
         name: "Social Media Management", 
         slug: "social-media-management", 
         description: "Comprehensive management of your brand's presence across social platforms.",
-        icon: "share-2",
+        icon: "social-media-management",
         detailedDescription: "Our social media experts develop and execute strategies that build your online presence, engage your audience, and drive business growth. Services include content creation, community management, paid advertising, and performance analytics across all major platforms."
       },
       { 
         name: "AI Automation and Development", 
         slug: "ai-automation-development", 
         description: "Cutting-edge AI solutions to automate processes and enhance business efficiency.",
-        icon: "file-text",
+        icon: "ai-automation-development",
         detailedDescription: "VOXZEAL harnesses the power of artificial intelligence to help businesses streamline operations and drive innovation. From advanced chatbots and process automation to custom AI development and prompt engineering, our solutions are designed to enhance efficiency, reduce costs, and create competitive advantages in today's rapidly evolving digital landscape."
       }
     ];
