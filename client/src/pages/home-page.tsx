@@ -5,6 +5,8 @@ import { Footer } from "@/components/ui/footer";
 import { useQuery } from "@tanstack/react-query";
 import { type Service, type Testimonial } from "@shared/schema";
 import { Monitor, ShoppingCart, Mail, Code, Share2, FileText, ChevronRight, Check, Loader2 } from "lucide-react";
+import officeBgImage from "@assets/group-multinational-busy-people-working-office.jpg";
+import voxzealLogo from "@assets/voxzeal logo transparent.png";
 
 // Mapping from slug to icon
 const ServiceIcons: Record<string, React.ElementType> = {
@@ -34,17 +36,28 @@ export default function HomePage() {
         <div className="bg-primary relative overflow-hidden">
           {/* Office environment background image with overlay */}
           <div className="absolute inset-0 z-0">
+            {/* Background office image */}
             <div 
-              className="w-full h-full bg-cover bg-center opacity-20"
+              className="w-full h-full bg-cover bg-center opacity-25"
               style={{
-                backgroundImage: "url('https://images.unsplash.com/photo-1600880292089-90a7e086ee0c?auto=format&fit=crop&q=80&w=1974')",
+                backgroundImage: `url(${officeBgImage})`,
                 backgroundBlendMode: "overlay"
               }}
             ></div>
-            <div className="absolute inset-0 bg-primary opacity-70"></div>
+            {/* Dark overlay to ensure text readability */}
+            <div className="absolute inset-0 bg-primary opacity-65"></div>
+            
+            {/* Company logo in background */}
+            <div className="absolute inset-0 flex items-center justify-center opacity-40 z-10">
+              <img 
+                src={voxzealLogo} 
+                alt="VOXZEAL" 
+                className="w-2/3 max-w-lg h-auto" 
+              />
+            </div>
           </div>
           
-          <div className="max-w-7xl mx-auto py-20 px-4 sm:py-32 sm:px-6 lg:px-8 relative z-10">
+          <div className="max-w-7xl mx-auto py-20 px-4 sm:py-32 sm:px-6 lg:px-8 relative z-20">
             <div className="text-center mx-auto max-w-3xl">
               <h1 className="text-4xl font-extrabold text-white tracking-tight sm:text-5xl md:text-6xl">
                 Transform Your Digital Presence
