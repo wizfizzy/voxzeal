@@ -115,7 +115,7 @@ export default function AboutPage() {
             <div className="text-center">
               <h2 className="text-base font-semibold text-primary uppercase tracking-wide">About Me</h2>
               <p className="mt-1 text-3xl font-extrabold text-gray-900 sm:text-4xl sm:tracking-tight">
-                Meet The Founder
+                Elizabeth Highams
               </p>
             </div>
 
@@ -131,12 +131,17 @@ export default function AboutPage() {
               </div>
               <div className="md:w-2/3 mt-8 md:mt-0">
                 <h3 className="text-2xl font-bold text-gray-900 mb-4">Process Automation Specialist</h3>
-                <p className="text-lg text-gray-700 mb-6">
-                  As an experienced Process Automation Specialist specializing in tech support, automation, web design, and Prompt Engineering, I help businesses streamline operations, optimize workflows, and enhance productivity. With a keen eye for efficiency and a proactive approach, I handle client communication, administrative support, email automation, and website management, allowing you to focus on scaling your business.
-                </p>
-                <p className="text-lg text-gray-700">
-                  My goal is to simplify your processes, save you time, and ensure seamless execution of your strategic tasks.
-                </p>
+                <div className="text-lg text-gray-700 mb-6">
+                  <p className="mb-4">
+                    As an experienced Process Automation Specialist specializing in tech support, automation, web design, and Prompt Engineering, I help businesses streamline operations, optimize workflows, and enhance productivity.
+                  </p>
+                  <p className="mb-4">
+                    With a keen eye for efficiency and a proactive approach, I handle client communication, administrative support, email automation, and website management, allowing you to focus on scaling your business.
+                  </p>
+                  <p>
+                    My goal is to simplify your processes, save you time, and ensure seamless execution of your strategic tasks.
+                  </p>
+                </div>
                 <div className="mt-8">
                   <a 
                     href="https://calendly.com/voxzeal/book-a-call" 
@@ -222,9 +227,9 @@ export default function AboutPage() {
                 </a>
               </div>
               <div className="ml-3 inline-flex rounded-md shadow">
-                <Link href="/contact">
+                <Link href="/blog">
                   <Button variant="outline" className="border-white text-white hover:bg-blue-800">
-                    Contact Us
+                    View Blog
                   </Button>
                 </Link>
               </div>
