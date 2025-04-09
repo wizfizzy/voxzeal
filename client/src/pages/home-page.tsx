@@ -46,15 +46,6 @@ export default function HomePage() {
             ></div>
             {/* Dark overlay to ensure text readability */}
             <div className="absolute inset-0 bg-primary opacity-65"></div>
-            
-            {/* Company logo in background */}
-            <div className="absolute inset-0 flex items-center justify-center opacity-40 z-10">
-              <img 
-                src={voxzealLogo} 
-                alt="VOXZEAL" 
-                className="w-2/3 max-w-lg h-auto" 
-              />
-            </div>
           </div>
           
           <div className="max-w-7xl mx-auto py-20 px-4 sm:py-32 sm:px-6 lg:px-8 relative z-20">
