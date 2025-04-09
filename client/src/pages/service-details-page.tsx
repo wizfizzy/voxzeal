@@ -4,16 +4,35 @@ import { Button } from "@/components/ui/button";
 import { Header } from "@/components/ui/header";
 import { Footer } from "@/components/ui/footer";
 import { type Service, type PortfolioItemWithService } from "@shared/schema";
-import { Monitor, ShoppingCart, Mail, Code, Share2, FileText, ArrowLeft, Loader2 } from "lucide-react";
+import { 
+  Headphones, 
+  ShoppingCart, 
+  MailPlus, 
+  Code, 
+  Share2, 
+  Bot, 
+  ArrowLeft, 
+  Loader2 
+} from "lucide-react";
 
-// Mapping from slug to icon
-const ServiceIcons: Record<string, React.ElementType> = {
-  "monitor": Monitor,
-  "shopping-cart": ShoppingCart,
-  "mail": Mail,
-  "code": Code,
-  "share-2": Share2,
-  "file-text": FileText
+// Service Icon component to render the appropriate icon
+const ServiceIcon = ({ slug }: { slug: string }) => {
+  switch (slug) {
+    case "tech-virtual-assistant":
+      return <Headphones className="w-20 h-20 text-white" />;
+    case "ecommerce-support":
+      return <ShoppingCart className="w-20 h-20 text-white" />;
+    case "email-marketing":
+      return <MailPlus className="w-20 h-20 text-white" />;
+    case "web-design-development":
+      return <Code className="w-20 h-20 text-white" />;
+    case "social-media-management":
+      return <Share2 className="w-20 h-20 text-white" />;
+    case "ai-automation-development":
+      return <Bot className="w-20 h-20 text-white" />;
+    default:
+      return <Headphones className="w-20 h-20 text-white" />;
+  }
 };
 
 export default function ServiceDetailsPage() {
@@ -34,9 +53,6 @@ export default function ServiceDetailsPage() {
 
   // Split the detailed description into paragraphs
   const descriptionParagraphs = service?.detailedDescription.split('. ') || [];
-
-  // Determine the right icon to display
-  const ServiceIcon = service?.icon ? ServiceIcons[service.icon] : Monitor;
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -76,7 +92,7 @@ export default function ServiceDetailsPage() {
                 </div>
                 <div className="mt-8 md:mt-0 md:w-1/3 flex justify-center">
                   <div className="bg-blue-800 p-6 rounded-full">
-                    <ServiceIcon className="w-20 h-20 text-white" />
+                    <ServiceIcon slug={service.slug} />
                   </div>
                 </div>
               </div>
